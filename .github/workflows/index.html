@@ -3,108 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Script Loader</title>
+    <title>iOS Premium Script Hub</title>
+    <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+    
     <style>
         :root {
-            --ios-bg: rgba(255, 255, 255, 0.7);
-            --ios-blur: blur(20px);
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --blur: blur(25px);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: url('https://wallpaperaccess.com/full/1162386.jpg') no-repeat center center fixed;
+            padding: 20px 0;
+            font-family: 'SF Pro Display', -apple-system, sans-serif;
+            background: url('https://w0.peakpx.com/wallpaper/593/147/HD-wallpaper-ios-16-stock-cool.jpg') no-repeat center center fixed;
             background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #1d1d1f;
+        }
+
+        /* Hiệu ứng Container chính */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            width: 90%;
+            max-width: 400px;
+            border-radius: 30px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-size: 26px; font-weight: 700; text-align: center; margin-bottom: 5px; }
+        .status-bar { text-align: center; font-size: 13px; margin-bottom: 20px; color: #555; }
+
+        /* Nút bấm kiểu iOS */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            gap: 8px;
         }
 
-        /* Hiệu ứng Glassmorphism */
-        .container {
-            background: var(--ios-bg);
-            backdrop-filter: var(--ios-blur);
-            -webkit-backdrop-filter: var(--ios-blur);
-            width: 350px;
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            animation: slideUp 0.8s ease-out;
-        }
+        .btn-primary { background: var(--ios-blue); color: white; }
+        .btn-success { background: var(--ios-green); color: white; }
+        .btn-ghost { background: rgba(0,0,0,0.05); color: var(--ios-blue); }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        .btn:active { transform: scale(0.96); opacity: 0.8; }
 
-        h1 { font-weight: 600; font-size: 24px; color: #000; }
-
-        .btn-ios {
-            background: #007AFF; /* Màu xanh đặc trưng iOS */
-            color: white;
-            border: none;
-            padding: 12px 25px;
+        /* Input & Textarea */
+        input, textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.4);
+            border: 1px solid rgba(0,0,0,0.1);
             border-radius: 12px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 12px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            outline: none;
         }
 
-        .btn-ios:active {
-            transform: scale(0.95);
-            background: #0056b3;
-        }
+        /* Phần Docs */
+        .docs-title { font-weight: 700; font-size: 18px; margin-bottom: 15px; display: block; }
+        .docs-item { margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 10px; }
+        .docs-item b { color: var(--ios-blue); display: block; margin-bottom: 4px; }
+        .docs-item p { margin: 0; font-size: 14px; color: #444; line-height: 1.4; }
 
-        textarea {
-            width: 100%;
-            height: 100px;
-            border-radius: 15px;
-            border: none;
-            background: rgba(255, 255, 255, 0.5);
-            margin-top: 15px;
-            padding: 10px;
-            box-sizing: border-box;
-            font-family: monospace;
-            resize: none;
+        /* Popup thông báo */
+        #popup {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100; visibility: hidden; opacity: 0; transition: 0.3s;
         }
+        #popup.show { visibility: visible; opacity: 1; }
 
-        .status { font-size: 14px; margin-top: 10px; color: #555; }
+        .popup-content {
+            background: white; width: 80%; max-width: 300px;
+            padding: 20px; border-radius: 20px; text-align: center;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Script Loader</h1>
-    <p class="status">Hệ thống: <span id="sys-status">Chờ Get Key...</span></p>
-    
-    <button class="btn-ios" onclick="getKey()">Lấy Key (Get Key)</button>
+    <div id="popup">
+        <div class="popup-content">
+            <h3>Chào mừng bạn! 👋</h3>
+            <p style="font-size: 14px; color: #666;">Nhấn Get Key để bắt đầu sử dụng Script miễn phí nhé!</p>
+            <button class="btn btn-primary" onclick="closePopup()">Đồng ý</button>
+        </div>
+    </div>
 
-    <textarea id="scriptBox" placeholder="Dán script vào đây hoặc nhận từ key..."></textarea>
-    <button class="btn-ios" style="background: #34C759;" onclick="copyScript()">Copy Script</button>
-</div>
+    <div class="card">
+        <h1>Script Hub</h1>
+        <div class="status-bar">
+            Trạng thái: <span id="stt" style="color: var(--ios-green); font-weight: bold;">Online</span>
+        </div>
 
-<script>
-    function getKey() {
-        // Bạn có thể thay link Linkvertise hoặc Ad-center vào đây
-        window.open("https://your-link-monetization.com", "_blank");
-        document.getElementById('sys-status').innerText = "Vui lòng nhập key sau khi vượt link!";
-        document.getElementById('sys-status').style.color = "#007AFF";
-    }
+        <button class="btn btn-primary" onclick="getKey()">
+            🔑 Get Key (Mới nhất)
+        </button>
 
-    function copyScript() {
-        const script = document.getElementById('scriptBox');
-        script.select();
-        document.execCommand('copy');
-        alert("Đã sao chép script vào bộ nhớ tạm!");
-    }
-</script>
+        <input type="text" id="keyInput" placeholder="Dán mã Key vào đây...">
+        
+        <button class="btn btn-success" onclick="checkKey()">
+            🚀 Check Key & Load Script
+        </button>
+    </div>
+
+    <div class="card" id="scriptSection" style="display: none;">
+        <span class="docs-title">✨ Mã Script của bạn:</span>
+        <textarea id="scriptCode" readonly>loadstring(game:HttpGet("https://raw.githubusercontent.com/YourName/Script/main/loader.lua"))()</textarea>
+        <button class="btn btn-ghost" onclick="copyScript()">📋 Sao chép Script</button>
+    </div>
+
+    <div class="card">
+        <span class="docs-title">📖 Tài liệu hướng dẫn</span>
+        
+        <div class="docs-item">
+            <b>1. Cách lấy Key</b>
+            <p>Nhấn Get Key -> Vượt Linkvertise (hoặc link rút gọn) -> Copy mã và dán vào ô nhập.</p>
+        </div>
+
+        <div class="docs-item">
+            <b>2. Cách chạy Script</b>
+            <p>Sau khi có mã, nhấn Copy Script và dán vào Delta, Fluxus hoặc Hydrogen của bạn.</p>
+        </div>
+
+        <div class="docs-item" style="border: none;">
+            <b>3. Hỗ trợ</b>
+            <p>Tham gia cộng đồng Discord để nhận thông báo cập nhật mới nhất.</p>
+        </div>
+        
+        <button class="btn btn-ghost" onclick="window.location.href='https://discord.com'">
+            💬 Tham gia Discord
+        </button>
+    </div>
+
+    <script>
+        // Hiển thị Popup khi load trang
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('popup').classList.add('show');
+            }, 500);
+        }
+
+        function closePopup() {
+            document.getElementById('popup').classList.remove('show');
+        }
+
+        // Logic Get Key
+        function getKey() {
+            // Thay link rút gọn của bạn vào đây
+            window.open("https://linkvertise.com/your-id/get-key", "_blank");
+            alert("Sau khi vượt link, hãy quay lại đây nhập Key!");
+        }
+
+        // Logic Check Key (Mẫu)
+        function checkKey() {
+            const input = document.getElementById('keyInput').value;
+            const correctKey = "HELLO-2026"; // Thay key bạn muốn ở đây
+
+            if(input === correctKey) {
+                alert("Kích hoạt thành công! ✅");
+                document.getElementById('scriptSection').style.display = "block";
+                document.getElementById('scriptSection').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert("Sai Key rồi bạn ơi! Vui lòng kiểm tra lại.");
+            }
+        }
+
+        // Copy Script
+        function copyScript() {
+            const copyText = document.getElementById("scriptCode");
+            copyText.select();
+            document.execCommand("copy");
+            alert("Đã sao chép Script!");
+        }
+    </script>
 
 </body>
 </html>
