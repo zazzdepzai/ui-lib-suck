@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Script Loader</title>
+    <style>
+        :root {
+            --ios-bg: rgba(255, 255, 255, 0.7);
+            --ios-blur: blur(20px);
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: url('https://wallpaperaccess.com/full/1162386.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Hiệu ứng Glassmorphism */
+        .container {
+            background: var(--ios-bg);
+            backdrop-filter: var(--ios-blur);
+            -webkit-backdrop-filter: var(--ios-blur);
+            width: 350px;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        h1 { font-weight: 600; font-size: 24px; color: #000; }
+
+        .btn-ios {
+            background: #007AFF; /* Màu xanh đặc trưng iOS */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-ios:active {
+            transform: scale(0.95);
+            background: #0056b3;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            border-radius: 15px;
+            border: none;
+            background: rgba(255, 255, 255, 0.5);
+            margin-top: 15px;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: monospace;
+            resize: none;
+        }
+
+        .status { font-size: 14px; margin-top: 10px; color: #555; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Script Loader</h1>
+    <p class="status">Hệ thống: <span id="sys-status">Chờ Get Key...</span></p>
+    
+    <button class="btn-ios" onclick="getKey()">Lấy Key (Get Key)</button>
+
+    <textarea id="scriptBox" placeholder="Dán script vào đây hoặc nhận từ key..."></textarea>
+    <button class="btn-ios" style="background: #34C759;" onclick="copyScript()">Copy Script</button>
+</div>
+
+<script>
+    function getKey() {
+        // Bạn có thể thay link Linkvertise hoặc Ad-center vào đây
+        window.open("https://your-link-monetization.com", "_blank");
+        document.getElementById('sys-status').innerText = "Vui lòng nhập key sau khi vượt link!";
+        document.getElementById('sys-status').style.color = "#007AFF";
+    }
+
+    function copyScript() {
+        const script = document.getElementById('scriptBox');
+        script.select();
+        document.execCommand('copy');
+        alert("Đã sao chép script vào bộ nhớ tạm!");
+    }
+</script>
+
+</body>
+</html>
