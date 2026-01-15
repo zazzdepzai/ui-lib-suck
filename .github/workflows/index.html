@@ -3,213 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Premium Script Hub</title>
-    <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
-    
+    <title>Sakura Hub - Work.ink System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --ios-blue: #007AFF;
-            --ios-green: #34C759;
-            --ios-red: #FF3B30;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --blur: blur(25px);
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            --pink-pastel: #ffafbd;
+            --glass: rgba(255, 255, 255, 0.75);
         }
 
         body {
             margin: 0;
-            padding: 20px 0;
-            font-family: 'SF Pro Display', -apple-system, sans-serif;
-            background: url('https://w0.peakpx.com/wallpaper/593/147/HD-wallpaper-ios-16-stock-cool.jpg') no-repeat center center fixed;
+            font-family: 'Quicksand', sans-serif;
+            background: url('https://wallpaperaccess.com/full/1513271.jpg') no-repeat center center fixed;
             background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            color: #1d1d1f;
+            display: flex; justify-content: center; min-height: 100vh; padding: 20px 0;
         }
 
-        /* Hiệu ứng Container chính */
-        .card {
-            background: var(--glass-bg);
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            width: 90%;
-            max-width: 400px;
-            border-radius: 30px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            animation: fadeIn 0.8s ease-out;
+        .phone-container {
+            width: 90%; max-width: 400px;
+            background: var(--glass);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px; border: 3px solid rgba(255,255,255,0.4);
+            padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; position: relative;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .tab-content { display: none; animation: slideIn 0.4s ease-out; }
+        .active { display: block; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        h1 { font-size: 26px; font-weight: 700; text-align: center; margin-bottom: 5px; }
-        .status-bar { text-align: center; font-size: 13px; margin-bottom: 20px; color: #555; }
+        h1 { color: #ff4e50; text-align: center; font-size: 24px; }
+        .anime-img { width: 100px; display: block; margin: 0 auto; }
 
-        /* Nút bấm kiểu iOS */
+        /* Button & UI */
         .btn {
-            width: 100%;
-            padding: 14px;
-            border-radius: 14px;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
+            width: 100%; padding: 15px; border-radius: 18px; border: none;
+            margin-top: 15px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .btn-main { background: linear-gradient(45deg, #ff9a9e, #fad0c4); color: white; }
+        .btn-nav { background: rgba(0,0,0,0.05); color: var(--ios-blue); font-size: 14px; }
+
+        input {
+            width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd;
+            margin-top: 10px; outline: none; text-align: center;
         }
 
-        .btn-primary { background: var(--ios-blue); color: white; }
-        .btn-success { background: var(--ios-green); color: white; }
-        .btn-ghost { background: rgba(0,0,0,0.05); color: var(--ios-blue); }
-
-        .btn:active { transform: scale(0.96); opacity: 0.8; }
-
-        /* Input & Textarea */
-        input, textarea {
-            width: 100%;
-            background: rgba(255,255,255,0.4);
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 12px;
-            padding: 12px;
-            font-size: 14px;
-            margin-bottom: 12px;
-            outline: none;
+        /* Nav Bar */
+        .nav-bar {
+            display: flex; justify-content: space-around; margin-top: auto;
+            padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.1);
         }
-
-        /* Phần Docs */
-        .docs-title { font-weight: 700; font-size: 18px; margin-bottom: 15px; display: block; }
-        .docs-item { margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 10px; }
-        .docs-item b { color: var(--ios-blue); display: block; margin-bottom: 4px; }
-        .docs-item p { margin: 0; font-size: 14px; color: #444; line-height: 1.4; }
-
-        /* Popup thông báo */
-        #popup {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 100; visibility: hidden; opacity: 0; transition: 0.3s;
-        }
-        #popup.show { visibility: visible; opacity: 1; }
-
-        .popup-content {
-            background: white; width: 80%; max-width: 300px;
-            padding: 20px; border-radius: 20px; text-align: center;
-        }
+        .nav-item { cursor: pointer; font-size: 12px; font-weight: 700; color: #666; }
+        .nav-item.active-nav { color: #ff4e50; }
     </style>
 </head>
 <body>
 
-    <div id="popup">
-        <div class="popup-content">
-            <h3>Chào mừng bạn! 👋</h3>
-            <p style="font-size: 14px; color: #666;">Nhấn Get Key để bắt đầu sử dụng Script miễn phí nhé!</p>
-            <button class="btn btn-primary" onclick="closePopup()">Đồng ý</button>
-        </div>
-    </div>
-
-    <div class="card">
-        <h1>Script Hub</h1>
-        <div class="status-bar">
-            Trạng thái: <span id="stt" style="color: var(--ios-green); font-weight: bold;">Online</span>
-        </div>
-
-        <button class="btn btn-primary" onclick="getKey()">
-            🔑 Get Key (Mới nhất)
-        </button>
-
-        <input type="text" id="keyInput" placeholder="Dán mã Key vào đây...">
+<div class="phone-container">
+    
+    <div id="main" class="tab-content active">
+        <img src="https://www.pngarts.com/files/1/Chibi-Anime-PNG-Transparent-Image.png" class="anime-img">
+        <h1>Sakura Hub</h1>
+        <p style="text-align: center; font-size: 14px;">Chào mừng bạn đến với hệ thống Script!</p>
         
-        <button class="btn btn-success" onclick="checkKey()">
-            🚀 Check Key & Load Script
-        </button>
+        <button class="btn btn-main" onclick="generateWorkInkLink()">🔑 LẤY KEY (WORK.INK)</button>
+        <input type="text" id="inputKey" placeholder="Dán mã Key vào đây...">
+        <button class="btn btn-main" style="background: #34C759;" onclick="verifyKey()">KÍCH HOẠT</button>
     </div>
 
-    <div class="card" id="scriptSection" style="display: none;">
-        <span class="docs-title">✨ Mã Script của bạn:</span>
-        <textarea id="scriptCode" readonly>loadstring(game:HttpGet("https://raw.githubusercontent.com/YourName/Script/main/loader.lua"))()</textarea>
-        <button class="btn btn-ghost" onclick="copyScript()">📋 Sao chép Script</button>
+    <div id="steps" class="tab-content">
+        <h1>Các Bước Thực Hiện</h1>
+        <div style="font-size: 14px; line-height: 1.8;">
+            <p>1️⃣ Nhấn nút <b>Lấy Key</b> tại trang chủ.</p>
+            <p>2️⃣ Hệ thống chuyển hướng tới Work.ink.</p>
+            <p>3️⃣ Hoàn thành các nhiệm vụ (Xem web, chờ giây).</p>
+            <p>4️⃣ Copy mã Key hiện ra cuối cùng.</p>
+        </div>
+        <button class="btn btn-nav" onclick="switchTab('main')">Quay lại Trang chủ</button>
     </div>
 
-    <div class="card">
-        <span class="docs-title">📖 Tài liệu hướng dẫn</span>
+    <div id="docs" class="tab-content">
+        <h1>Tài Liệu Script</h1>
+        <div style="font-size: 13px; max-height: 300px; overflow-y: auto; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 10px;">
+            <b style="color: #ff4e50;">[Fix Lỗi Văng Game]</b><br>
+            Tắt diệt virus và cài đặt lại bản Executor mới nhất.<br><br>
+            <b style="color: #ff4e50;">[Cách Dán Script]</b><br>
+            Sau khi có mã, dán vào khung chạy (Execute) của Delta hoặc Fluxus.
+        </div>
+        <button class="btn btn-nav" onclick="switchTab('main')">Tôi đã hiểu</button>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active-nav" onclick="switchTab('main')">🏠 Home</div>
+        <div class="nav-item" onclick="switchTab('steps')">🛤️ Steps</div>
+        <div class="nav-item" onclick="switchTab('docs')">📚 Docs</div>
+    </div>
+</div>
+
+<script>
+    // CẤU HÌNH API WORK.INK
+    const WORKINK_API_KEY = "TOKEN_CUA_BAN_TAI_DAY"; // Dán API Key của bạn vào đây
+    const DESTINATION_URL = window.location.href; // Trang đích (có thể là trang hiện tại)
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // Hàm tự động tạo link bằng API Work.ink
+    async function generateWorkInkLink() {
+        // Nếu chưa có API, bạn có thể dùng link rút gọn thủ công bên dưới
+        // window.open("https://work.ink/xxxx/your-link", "_blank");
         
-        <div class="docs-item">
-            <b>1. Cách lấy Key</b>
-            <p>Nhấn Get Key -> Vượt Linkvertise (hoặc link rút gọn) -> Copy mã và dán vào ô nhập.</p>
-        </div>
-
-        <div class="docs-item">
-            <b>2. Cách chạy Script</b>
-            <p>Sau khi có mã, nhấn Copy Script và dán vào Delta, Fluxus hoặc Hydrogen của bạn.</p>
-        </div>
-
-        <div class="docs-item" style="border: none;">
-            <b>3. Hỗ trợ</b>
-            <p>Tham gia cộng đồng Discord để nhận thông báo cập nhật mới nhất.</p>
-        </div>
+        // Đoạn code này dành cho ai muốn dùng API thực thụ:
+        /*
+        const response = await fetch(`https://work.ink/api/v1/shorten?api_key=${WORKINK_API_KEY}&url=${encodeURIComponent(DESTINATION_URL)}`);
+        const data = await response.json();
+        if(data.success) {
+            window.open(data.short_url, "_blank");
+        } else {
+            alert("Lỗi tạo link API!");
+        }
+        */
         
-        <button class="btn btn-ghost" onclick="window.location.href='https://discord.com'">
-            💬 Tham gia Discord
-        </button>
-    </div>
+        // Giả lập cho bạn dễ hiểu:
+        alert("Hệ thống đang chuyển hướng bạn tới Work.ink để lấy Key...");
+        window.open("https://work.ink/xxxx/your-link", "_blank");
+    }
 
-    <script>
-        // Hiển thị Popup khi load trang
-        window.onload = function() {
-            setTimeout(() => {
-                document.getElementById('popup').classList.add('show');
-            }, 500);
+    function verifyKey() {
+        let key = document.getElementById('inputKey').value;
+        if(key === "SAKURA_FREE") { // Key mẫu
+            alert("✅ Thành công! Script đã được kích hoạt.");
+        } else {
+            alert("❌ Key không chính xác hoặc đã hết hạn!");
         }
-
-        function closePopup() {
-            document.getElementById('popup').classList.remove('show');
-        }
-
-        // Logic Get Key
-        function getKey() {
-            // Thay link rút gọn của bạn vào đây
-            window.open("https://linkvertise.com/your-id/get-key", "_blank");
-            alert("Sau khi vượt link, hãy quay lại đây nhập Key!");
-        }
-
-        // Logic Check Key (Mẫu)
-        function checkKey() {
-            const input = document.getElementById('keyInput').value;
-            const correctKey = "HELLO-2026"; // Thay key bạn muốn ở đây
-
-            if(input === correctKey) {
-                alert("Kích hoạt thành công! ✅");
-                document.getElementById('scriptSection').style.display = "block";
-                document.getElementById('scriptSection').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                alert("Sai Key rồi bạn ơi! Vui lòng kiểm tra lại.");
-            }
-        }
-
-        // Copy Script
-        function copyScript() {
-            const copyText = document.getElementById("scriptCode");
-            copyText.select();
-            document.execCommand("copy");
-            alert("Đã sao chép Script!");
-        }
-    </script>
+    }
+</script>
 
 </body>
 </html>
